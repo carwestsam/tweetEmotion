@@ -1,4 +1,4 @@
 # ignore sql dump file
-data/tweets_0826.sql
-data/tweets_small.txt
+data/*
+
 
