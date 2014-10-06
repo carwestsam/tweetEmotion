@@ -64,5 +64,5 @@ lfile.write( str(cnt)+'\t tweets remain\n' )
 
 ifile.close()
 ofile.close()
-
 lfile.close()
+
