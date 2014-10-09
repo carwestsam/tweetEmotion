@@ -10,7 +10,10 @@
 
 """
 
+import sys
 import codecs
+import io
+
 
 processSize = 50000
 processSlide = processSize / 100
@@ -39,16 +42,19 @@ def openFiles():
     global ifile, ofile, lfile
     if ifileName != '':
         ifile = codecs.open( ifileName, 'r', 'utf-8' )
+        #ifile = io.open( ifileName, 'r', encoding='utf-8-mb4' )
         print 'ifile open :\t' + ifileName
     else:
         print 'ifileName no set!!'
     if ofileName != '':
         ofile = codecs.open( ofileName, 'w', 'utf-8' )
+        #ofile = io.open( ofileName, 'w', encoding='utf8mb4' )
         print 'ofile open :\t' + ofileName
     else:
         print 'ofileName no set!!'
     if lfileName != '':
-        lfile = codecs.open( lfileName, 'w', 'utf-8' )
+        #lfile = codecs.open( lfileName, 'w', 'utf-8' )
+        lfile = io.open( lfileName, 'w', encoding='utf-8' )
         print 'lfile open :\t' + lfileName
     else :
         print 'lfileName no set!!'
@@ -77,6 +83,13 @@ def loop(func, info=''):
     print info
     for x in range(processSize):
         func()
+        if x % processSlide == 0:
+            print str(x/processSlide) + '% processed'
+
+def loop_with_param(func, params={}, info=''):
+    print info
+    for x in range(processSize):
+        func(params)
         if x % processSlide == 0:
             print str(x/processSlide) + '% processed'
 

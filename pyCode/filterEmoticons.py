@@ -24,9 +24,6 @@ def __bandWords( tweet ):
     noListWhite = re.sub( r'[ \t]+', ' ', noAt )
     return noListWhite
 
-print __bandWords('hello word ! $fie :-)')
-
-
 def __cleanTweet():
     dts.writeO( __bandWords(dts.readlineI()) )
     
