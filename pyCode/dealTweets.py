@@ -13,7 +13,11 @@
 import sys
 import codecs
 import io
-
+import time
+from progressbar import AnimatedMarker, Bar, BouncingBar, Counter, ETA, \
+    FileTransferSpeed, FormatLabel, Percentage, \
+    ProgressBar, ReverseBar, RotatingMarker, \
+    SimpleProgress, Timer, AdaptiveETA, AdaptiveTransferSpeed
 
 processSize = 50000
 processSlide = processSize / 100
@@ -53,8 +57,8 @@ def openFiles():
     else:
         print 'ofileName no set!!'
     if lfileName != '':
-        #lfile = codecs.open( lfileName, 'w', 'utf-8' )
-        lfile = io.open( lfileName, 'w', encoding='utf-8' )
+        lfile = codecs.open( lfileName, 'w', 'utf-8' )
+        #lfile = io.open( lfileName, 'w', encoding='utf-8' )
         print 'lfile open :\t' + lfileName
     else :
         print 'lfileName no set!!'
@@ -80,16 +84,23 @@ def writeL( str ):
         lfile.write( str )
 
 def loop(func, info=''):
-    print info
-    for x in range(processSize):
+    #print info
+    #widgets = ['Processed: ', Counter(), ' lines (', Timer(), ')']
+    widgets = [Percentage(), Bar('>') , info, ReverseBar('<'), ETA()]
+    widgets = [Percentage(), Bar('>') , info, ReverseBar('<'), Timer()]
+    pbar = ProgressBar(widgets=widgets, maxval=processSize)
+    for x in pbar(i for i in range(processSize)):
         func()
-        if x % processSlide == 0:
-            print str(x/processSlide) + '% processed'
+        #if x % processSlide == 0:
+        #    print str(x/processSlide) + '% processed'
 
 def loop_with_param(func, params={}, info=''):
-    print info
-    for x in range(processSize):
+    #print info
+    #widgets = ['Processed: ', Counter(), ' lines (', Timer(), ')']
+    widgets = [Percentage(), Bar('>') , info, ReverseBar('<'), Timer()]
+    pbar = ProgressBar(widgets=widgets, maxval=processSize)
+    for x in pbar ( i for i in range (processSize) ):
+        #for x in range(processSize):
         func(params)
-        if x % processSlide == 0:
-            print str(x/processSlide) + '% processed'
-
+        #if x % processSlide == 0:
+        #    print str(x/processSlide) + '% processed'

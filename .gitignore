@@ -1,6 +1,7 @@
 # ignore sql dump file
 data/*
 tmp/*
+output/*
 *.pyc
 *.py~
 
