@@ -37,7 +37,5 @@ def __preprocess():
 
 dts.loop( __preprocess, 'preprocess symbols' )
 
-
-
 dts.closeFiles()
 

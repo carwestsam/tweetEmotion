@@ -104,3 +104,12 @@ def loop_with_param(func, params={}, info=''):
         func(params)
         #if x % processSlide == 0:
         #    print str(x/processSlide) + '% processed'
+
+def loop_with_param_clean(func, clean, params={}, info=''):
+    widgets = [Percentage(), Bar('>') , info, ReverseBar('<'), Timer()]
+    pbar = ProgressBar(widgets=widgets, maxval=processSize)
+    for x in pbar ( i for i in range (processSize) ):
+        func(params)
+        if x % processSlide == 0:
+            clean( params )
+

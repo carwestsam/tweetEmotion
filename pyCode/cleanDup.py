@@ -21,8 +21,8 @@ ifile = codecs.open(ifileName, 'r', 'utf-8')
 ofile = codecs.open(ofileName, 'w', 'utf-8')
 lfile = codecs.open(lfileName, 'w', 'utf-8')
 
-#processSize = 31105948
-processSize = 5000000
+processSize = 31105948
+#processSize = 5000000
 processSlide = processSize / 100 
 
 md5set = set()

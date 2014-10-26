@@ -10,13 +10,17 @@
 feature Generator 
 """
 
+import util
 import codecs
 import dealTweets as dts
 import checkemoticon 
 import preprocess_func
 from collections import deque
+import utilities
+import re
 
 
+tokenizer = utilities.Tokenizer()
 
 index_name_dict={}
 index_name_cnt = 0
@@ -26,36 +30,8 @@ def __getIndex( index_name ):
     if -1 == index_name_dict.get( index_name, -1 ):
         index_name_dict.update( {index_name : index_name_cnt })
         index_name_cnt += 1
-    return str( index_name_dict.get( index_name, -1 ) )
+    return index_name_dict.get( index_name, -1 ) 
     
-
-
-def __calcDistribution_list( list ):
-    sum = 0
-    for x in list:
-        sum += x
-    sum += 0.0
-    nlist = []
-    for x in list:
-        if sum == 0 :
-            nlist.append( 0 )
-        else :
-            nlist.append( x / sum )
-    return nlist
-
-
-
-def __calcDistribution_dict( dict ):
-    sum = 0.0
-    for x in dict.itervalues():
-        sum += x
-    newdict = {}
-    for key,value in dict.iteritems() :
-        if sum == 0:
-            newdict.update ( {key: 0} )
-        else :
-            newdict.update( { key : value / sum } )
-    return newdict 
 
 def __att(text, featureList):
     cnt = 0
@@ -77,22 +53,43 @@ def __chars( text, featureList ):
     formatter = 'abcdefghijklmnopqrstuvwxyz1234567890'
     #formatter = 'abcdefghijklmnopqrstuvwxyz'
     dict = {}
-    for ch in formatter:
-        dict.update({ 'char_%s' % ch : 0 })
+    #for ch in formatter:
+    #    dict.update({ 'char_%s' % ch : 0 })
     for ch in text:
         if ch in formatter:
             dict.update( { 'char_%s' % ch : dict.get('char_'+ch, 0) + 1 })
 
-    for key,value in __calcDistribution_dict(dict).iteritems():
+    for key,value in util.__calcDistribution_dict(dict).iteritems():
         idx = __getIndex( key )
         featureList.update({ idx : str(value)})
+
+
+def __words( text, featureList ):
+    text = re.sub('[!?]', '', text)
+    text = re.sub('[^\d\w\ ]', '', text)
+    dict = {}
+    for term in tokenizer.tokenize( text ):
+        dict.update( { 'words_%s' % term : dict.get( 'words_%s' % term, 0 ) + 1 } )
+    for key,value in dict.iteritems():
+        idx = __getIndex( key )
+        featureList.update({ idx : str(value) })
+
+__att_SELECT = False
+__que_SELECT = False
+__chars_SELECT = False
+__words_SELECT = False
 
 def __g_each_feature(text):
     #featureList = {"label":"1"}
     featureList = {}
-    __att   (text, featureList)
-    __que   (text, featureList)
-    __chars (text, featureList)
+    if __att_SELECT :
+        __att   (text, featureList)
+    if __que_SELECT :
+        __que   (text, featureList)
+    if __chars_SELECT :
+        __chars (text, featureList)
+    if __words_SELECT :
+        __words (text, featureList)
     return featureList
 
 def __g_each_tweet( param ):
@@ -104,18 +101,50 @@ def __g_each_tweet( param ):
 
     featureList = __g_each_feature(preprocess_func.preprocess(line))
 
-    for t in range( index_name_cnt-1 ):
-        oline += str(t) + ':' + featureList[str(t)] + ' '
+    
+    for key, value in [(k,featureList[k]) for k in sorted(featureList.keys())]:
+        oline += str(key) + ':' + value + ' '
+    
+    #for t in range( index_name_cnt-1 ):
+    #    oline += str(t) + ':' + featureList[str(t)] + ' '
     #for key,value in featureList.items():
     #    oline += key + ':' + value + ' '
 
     #return oline
     dts.writeO( oline + '\n' )
 
+def __featureGenerator_init(): 
+    global __att_SELECT, __que_SELECT, __chars_SELECT, __words_SELECT
+    
+    __getIndex ( 'att' ) 
+    __att_SELECT = True
+
+    __getIndex ( 'que' )
+    __que_SELECT = True
+    
+    formatter = 'abcdefghijklmnopqrstuvwxyz1234567890'
+    for ch in formatter:
+        __getIndex( 'char_%s' % ch )
+    __chars_SELECT = True
+    
+    ifile = codecs.open( '../output/Dict_select.txt', 'r', 'utf-8' )
+    for x in range ( 20000 ):
+        line = ifile.readline()
+        if not line:
+            break
+        word = line.split( ':' )[0]
+        __getIndex( 'words_%s' % word )
+    ifile.close()
+    __words_SELECT = True
+
+
+
 def featureGenerator():
-    dts.setSize(2000)
+    dts.setSize(3000)
     dts.setFile( '../output/afterPre.txt', '../output/feature.txt', '../log/featureGenerator.log' )
     dts.openFiles()
+
+    __featureGenerator_init()
 
     for emo in checkemoticon.Emotions:
         filename = checkemoticon.outputDir + emo['filename']
