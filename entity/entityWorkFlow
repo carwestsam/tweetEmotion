@@ -1,0 +1,15 @@
+getUnigramWords.py
+从王帅的nltk数据弄出来Unigram Words
+变成一个list
+
+TopicFilter.py
+选取出了一系列的topic，筛选推文。
+筛选出了50000条
+
+featureUnigram.py
+将TopicFilter中筛选出的推文，变成Unigram的单词列表
+
+featureUnigram.py
+从整理出的有情感的
+
+

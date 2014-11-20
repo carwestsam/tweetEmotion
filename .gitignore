@@ -1,8 +1,13 @@
-# ignore sql dump file
-data/*
-tmp/*
-output*
-emojiOutput*
+#ignore sql dump file
+data/
+tmp/
+output/
+output1/
+output2/
+emojiOutput/
+entityOutput/
+hashOutput/
+Compare_Output/
 *.pyc
 *.py~
 

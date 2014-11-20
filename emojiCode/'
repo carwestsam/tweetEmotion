@@ -1,0 +1,128 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2014 Carwest Sung <carwestsam@gmail.com>
+#
+# Distributed under terms of the MIT license.
+
+"""
+form divideByEmoji.py{'../emojiOutput/labeled_by_emoji_[EMO].txt' }
+generating features by Unigram Words, given by entity/getUnigramWords.py
+
+Dict write to  '../emojiOutput/UnigramDict'
+
+"""
+
+import re
+import json
+import os
+import codecs
+import utilities
+import dealTweets as dts
+import divideByEmoji
+import preprocess_func
+
+UnigramDict = {}
+UnigramDict_Cnt = 0
+tokenizer = utilities.Tokenizer()
+
+PC = 0
+
+DictDir = '../emojiOutput/UnigramDict'
+
+def get_Index( word, edit=0 ):
+    global UnigramDict, UnigramDict_Cnt
+    if edit == 1:
+        UnigramDict_Cnt += 1
+        UnigramDict.update( { word: UnigramDict_Cnt  } )
+        return UnigramDict_Cnt
+
+    return UnigramDict.get( word, 0 )
+
+def init_Index():
+    ifile = codecs.open( '../emojiOutput/UnigramWords', 'r', 'utf-8' )
+    line = ifile.readline()
+    ifile.close()
+
+    list = json.loads( line )
+    for word in list:
+        index = get_Index( word, 1 )
+        print '%s:%d' % ( word, index )
+        
+    ofile = codecs.open( DictDir, 'w', 'utf-8' )
+    ofile.write( json.dumps( UnigramDict ) + u'\n' )
+    ofile.close()
+
+def load_Index():
+    ifile = codecs.open( DictDir, 'r', 'utf-8' )
+    line = ifile.readline()
+    ifile.close()
+
+    global UnigramDict
+    UnigramDict = json.loads( line )
+
+    for k,v in UnigramDict.iteritems():
+        print '-%s:%d' % ( k, v )
+
+def gen_Feature ( text ):
+    uni_dict = {}
+    wordlist = tokenizer.tokenize( preprocess_func.preprocess(text))
+    output = ''
+    for word in wordlist:
+        index = get_Index ( word )
+        #if index > 0:
+        uni_dict.update( {index : uni_dict.get( word, 0 ) + 1 } )
+    
+    for key, value in [(k,uni_dict[k]) for k in sorted(uni_dict.keys())]:
+        output+= str( key ) + ':' + str( value ) + ' '
+
+    return output
+
+def parse_line() :
+    line = dts.readlineI()
+    if not line:
+        return
+    try:
+        obj = json.loads( line )
+    except:
+        return
+
+    label = obj[u'label']
+    text = obj[u'text']
+
+    global PC
+    if int( label ) == 1:
+        PC += 1
+    output = '%d %s\n' % ( label, gen_Feature( text ) )
+    dts.writeO( output )
+    dts.writeL( str( label ) + '\n')
+
+if __name__ == "__main__":
+    init_Index()
+    #load_Index()
+
+    #for Emo in divideByEmoji.Emotions:
+    #    ifilename = divideByEmoji.OutputDir + Emo['name']
+    #    ofilename = '../emojiOutput/feautre_emoji_' + Emo['name']
+    #    lfilename = '../Compare_Output/ans_emoji_' + Emo['name'] 
+    #    dts.setSize( 100000 )
+    #    dts.setFile( ifilename, ofilename, lfilename )
+    #    dts.openFiles()
+    #    PC = 0
+    #    dts.loop( parse_line, 'generating ' + Emo['name'] )
+    #    dts.closeFiles()
+
+
+    #ifilename = '../emojiOutput/featre_all'
+    #ofilename = '../emojiOutput/feautre_gen_all'
+    #lfilename = '../Compare_Output/ans_all' 
+    #dts.setSize( 100000 )
+    #dts.setFile( ifilename, ofilename, lfilename )
+    #dts.openFiles()
+    #dts.loop( parse_line, 'generating all' )
+    #dts.closeFiles()
+
+    pass
+
+

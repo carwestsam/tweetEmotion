@@ -45,7 +45,7 @@ def __readin( tweetSet ):
         obj =  json.loads( line )
     except:
         #print line
-        nextline = dts.readlineI()
+        #nextline = dts.readlineI()
         #print nextline
         return
 
@@ -70,7 +70,7 @@ def __preProcess():
 
 def preAll():
     dts.setSize( 7000000 )
-    dts.setFile( '../data/twitter.tweets.json', '../emojiOutput/afterPre.txt', '../log/EmojiPre.log' )
+    dts.setFile( '../data/twitter.tweets.json', '../hashOutput/afterPre.txt', '../log/EmojiPre.log' )
     dts.openFiles()
     __preProcess()
     dts.closeFiles()

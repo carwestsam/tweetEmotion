@@ -32,7 +32,6 @@ def preprocess(text):
 
 	text = re.sub(u'(RT |\\\\|\u201c)"?@.*?[: ]', ' ', text)        #deal with retweet
 	text = re.sub('\.?@.*?( |:|$)', 'USERNAME ', text)              #deal with username
-        #text = re.sub('#\w+', 'twhashtag ', text)
 
 
 	text = HTMLParser.HTMLParser().unescape(text)                   #deal with character entity

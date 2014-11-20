@@ -7,84 +7,81 @@
 # Distributed under terms of the MIT license.
 
 """
-Preprocess for tweet file
-
-take out RT, url addresses, punctuations, ans paramiters
+Unigram feature from Wang's featureList
 """
 
 import re
-import sys
+import json
+import os
 import codecs
+import dealTweets as dts
+from collections import deque
+import utilities
 import HTMLParser
+import getUnigramWords
+
+tokenizer = utilities.Tokenizer()
 
 def preprocess(text):
-
         text = re.sub(u'\\\'', '\'', text)
         text = re.sub(u'\\\w', '', text)
-
 	text = re.sub(u'\u2026', ' ', text)                             #deal with horizontal ellipsis
 	text = re.sub(u'[\u201c\u201d]', '"', text)                     #deal with double quotation lmark
 	text = re.sub(u'[\u2018\u2019]', '\'', text)                    #deal with single quotation mark
-
 	text = re.sub('h…', 'URL', text)                                #deal with truncated url
 	text = re.sub('ht?….*$', 'URL', text)                           #deal with truncated url 
 	text = re.sub('(^|)?http?s?:?/?/?.*?( |$)', 'URL', text)        #deal with compelted url
-
 	text = re.sub(u'(RT |\\\\|\u201c)"?@.*?[: ]', ' ', text)        #deal with retweet
+        text = re.sub(u'#[\w\d]+', ' ', text)
 	text = re.sub('\.?@.*?( |:|$)', 'USERNAME ', text)              #deal with username
-        #text = re.sub('#\w+', 'twhashtag ', text)
-
-
 	text = HTMLParser.HTMLParser().unescape(text)                   #deal with character entity
 #	text = re.sub('[][!"#$*,/;<=>?@\\\\^_`{|}~]', ' ', text)        #deal with punctuation
         text = re.sub('[][:\(\)"#$*,/;<=>@\\\\^_`{|}~]', ' ', text)          #deal with punctuation, without '!?', for features
-
 	text = re.sub('( - )', ' ', text)
 	text = re.sub('---', ' ', text)
 	text = re.sub('\.\.\.', ' ', text)
 	text = re.sub('(, |\.( |$))', ' ', text)
 
-
 	return text
 
-ifileName = ''
-ofileName = ''
-ifile = ''
-ofile = ''
+def getUnigramVector(text):
+    pass
 
-def setFile(a='', b=''):
-    global ifileName, ofileName
-    ifileName = a
-    ofileName = b
-    if a != '':
-        ifile = codecs.open( ifileName, 'r', 'utf-8' )
-    if b != '':
-        ofile = codecs.open( ofileName, 'w', 'utf-8' )
+def __dealLine(param):
+    line = dts.readlineI()
+    if not line:
+        return
+    obj = json.loads( line )
+    text = obj['text']
+    hashtag = obj['hashtag']
+    if hashtag != param[0]:
+        return
+    
+    wordList = tokenizer.tokenize(preprocess(text))
+    dict = {}
+    for uni in getUnigramWords.getUnigramWords():
+        dict.update( { uni: 0 } )
+        for word in wordList:
+            if word == uni:
+                dict.update( { word: 1 } )
+    
+    nobj = ( dict, 0 )
+    #print nobj
+    dts.writeO( str(nobj)+'\n' )
 
-def closeFile():
-    if ifileName !='':
-        ifile.close()
-    if ofileName != '':
-        ofile.close()
 
-#argc = 3
-#
-#if argc != len(sys.argv):
-#
-#    print 'usage: python preprocessim.py ifilename ofilename'
-#
-#    exit(1)
-#
-#ifile = codecs.open(sys.argv[1], 'r', 'utf-8')
-#ofile = codecs.open(sys.argv[2], 'w', 'utf-8')
-#
-#for line in ifile:
-#
-#    ofile.write(preprocess(line))
-#    ofile.write('\n')
-#    ofile.write(line)
-#    ofile.write('\n')
-#
-#print "finished"
+def featureUnigram():
+    topicList = [ur"#emabiggestfans1d", ur"#emabiggestfansjustinbieber", ur"#porn", ur"#ipad", ur"#halloween", ur"#emabiggestfans5sos", ur"#stealmygirl", ur"#thewalkingdead", ur"#ebola", ur"#emabiggestfansarianagrande", ur"#lol"]
+    
+    for hashtag in topicList:
+        topic = hashtag[1:]
+        dts.setSize( 50000 )
+        dts.setFile( '../entityOutput/topictwitter', '../entityOutput/topicTwitter_'+topic, '../log/topicTwitterFeatvect')
+        dts.openFiles()
+        dts.loop_with_param( __dealLine, [ hashtag, ],'Generating Unigram With Tag:'+topic )
+        dts.closeFiles()
 
+if __name__ == "__main__":
+    featureUnigram()
+    pass
 

@@ -1,0 +1,7 @@
+[u'#elated', u'#overjoyed', u'#enjoy', u'#excited', u'#proud', u'#joyful', u'#feelhappy', u'#sohappy', u'#veryhappy', u'#happy', u'#superhappy', u'#happytweet', u'#feelblessed', u'#blessed', u'#amazing', u'#wonderful', u'#excelent', u'#delighted', u'#enthusiastic']
+
+hainList = [u'#calm', u'#calming', u'#peaceful', u'#quiet', u'#silent', u'#serene', u'#convinced', u'#consent', u'#contented', u'#contentment', u'#satisfied', u'#relax', u'#relaxed', u'#relaxing', u'#sleepy', u'#sleepyhead', u'#asleep', u'#resting', u'#restful', u'#placid'] 
+
+unacList = [u'#nervous', u'#anxious', u'#tension', u'#afraid', u'#fearful', u'#angry', u'#annoyed', u'#annoying', u'#stress', u'#distressed', u'#distress', u'#strssful', u'#stressed', u'#worried', u'#tense', u'#bothered', u'#disturbed', u'#irritated', u'#mad', u'#furious']
+uninList = [u'#sadifeelsad', u'#feelsad', u'#sosad', u'#verysad', u'#sorrow', u'#disppointed', u'#supersad', u'#miserable', u'#hopeless', u'#depress', u'#depressed', u'#depression', u'#fatigued', u'#gloomy', u'#nothappy', u'#unhappy', u'#suicidal', u'#downhearted', u'#hapless', u'#dispirited']
+

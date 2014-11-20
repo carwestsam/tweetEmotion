@@ -47,27 +47,27 @@ loathIcons=[u'\U0001f610', u'\U0001f611', u'\U0001f612', u'\U0001f615', u'\U0001
 angerIcons=[u'\U0001f620', u'\U0001f621', u'\U0001f624', u'\U0001f63e']
 vigilIcons=[u'\U0001f609']
 
-ecstaEmo = {'filename': 'ecstaEmo.txt', 'Icons': ecstaIcons, 'cnt':0, 'fileptr':0, 'label':'1'}
-admirEmo = {'filename': 'admirEmo.txt', 'Icons': admirIcons, 'cnt':0, 'fileptr':0, 'label':'2'}
-terrrEmo = {'filename': 'terrrEmo.txt', 'Icons': terrrIcons, 'cnt':0, 'fileptr':0, 'label':'3'}
-amazeEmo = {'filename': 'amazeEmo.txt', 'Icons': amazeIcons, 'cnt':0, 'fileptr':0, 'label':'4'}
-griefEmo = {'filename': 'griefEmo.txt', 'Icons': griefIcons, 'cnt':0, 'fileptr':0, 'label':'5'}
-loathEmo = {'filename': 'loathEmo.txt', 'Icons': loathIcons, 'cnt':0, 'fileptr':0, 'label':'6'}
-angerEmo = {'filename': 'angerEmo.txt', 'Icons': angerIcons, 'cnt':0, 'fileptr':0, 'label':'7'}
-vigilEmo = {'filename': 'vigilEmo.txt', 'Icons': vigilIcons, 'cnt':0, 'fileptr':0, 'label':'8'}
-
 #ecstaEmo = {'filename': 'ecstaEmo.txt', 'Icons': ecstaIcons, 'cnt':0, 'fileptr':0, 'label':'1'}
-#terrrEmo = {'filename': 'terrrEmo.txt', 'Icons': terrrIcons, 'cnt':0, 'fileptr':0, 'label':'2'}
-#amazeEmo = {'filename': 'amazeEmo.txt', 'Icons': amazeIcons, 'cnt':0, 'fileptr':0, 'label':'3'}
-#griefEmo = {'filename': 'griefEmo.txt', 'Icons': griefIcons, 'cnt':0, 'fileptr':0, 'label':'4'}
-#loathEmo = {'filename': 'loathEmo.txt', 'Icons': loathIcons, 'cnt':0, 'fileptr':0, 'label':'5'}
-#angerEmo = {'filename': 'angerEmo.txt', 'Icons': angerIcons, 'cnt':0, 'fileptr':0, 'label':'6'}
+#admirEmo = {'filename': 'admirEmo.txt', 'Icons': admirIcons, 'cnt':0, 'fileptr':0, 'label':'2'}
+#terrrEmo = {'filename': 'terrrEmo.txt', 'Icons': terrrIcons, 'cnt':0, 'fileptr':0, 'label':'3'}
+#amazeEmo = {'filename': 'amazeEmo.txt', 'Icons': amazeIcons, 'cnt':0, 'fileptr':0, 'label':'4'}
+#griefEmo = {'filename': 'griefEmo.txt', 'Icons': griefIcons, 'cnt':0, 'fileptr':0, 'label':'5'}
+#loathEmo = {'filename': 'loathEmo.txt', 'Icons': loathIcons, 'cnt':0, 'fileptr':0, 'label':'6'}
+#angerEmo = {'filename': 'angerEmo.txt', 'Icons': angerIcons, 'cnt':0, 'fileptr':0, 'label':'7'}
+#vigilEmo = {'filename': 'vigilEmo.txt', 'Icons': vigilIcons, 'cnt':0, 'fileptr':0, 'label':'8'}
+
+ecstaEmo = {'filename': 'ecstaEmo.txt', 'Icons': ecstaIcons, 'cnt':0, 'fileptr':0, 'label':'1'}
+terrrEmo = {'filename': 'terrrEmo.txt', 'Icons': terrrIcons, 'cnt':0, 'fileptr':0, 'label':'2'}
+amazeEmo = {'filename': 'amazeEmo.txt', 'Icons': amazeIcons, 'cnt':0, 'fileptr':0, 'label':'3'}
+griefEmo = {'filename': 'griefEmo.txt', 'Icons': griefIcons, 'cnt':0, 'fileptr':0, 'label':'4'}
+loathEmo = {'filename': 'loathEmo.txt', 'Icons': loathIcons, 'cnt':0, 'fileptr':0, 'label':'5'}
+angerEmo = {'filename': 'angerEmo.txt', 'Icons': angerIcons, 'cnt':0, 'fileptr':0, 'label':'6'}
 
 #   commit for test Emotion merge
 #Emotions = [ecstaEmo, admirEmo, terrrEmo,amazeEmo, griefEmo, loathEmo, angerEmo, vigilEmo ];
 
 
-Emotions = [ecstaEmo,admirEmo, terrrEmo, amazeEmo, griefEmo, loathEmo, angerEmo, vigilEmo ];
+Emotions = [ecstaEmo, terrrEmo,amazeEmo, griefEmo, loathEmo, angerEmo ];
 
 outputDir='../emojiOutput/'
 tokenizer = utilities.Tokenizer()
@@ -133,14 +133,14 @@ def __divide( parList ):
 #                    emo[ 'fileptr' ] . write ( line )
 
 def divideEmoticons():
-    dts.setSize( 100000 )
+    dts.setSize( 3830000 )
     dts.setFile('../emojiOutput/EafterPre.txt', '', '../log/divideEmoticons')
     dts.openFiles()
 
     for emo in Emotions:
         emo [ 'fileptr' ] = codecs.open( outputDir + emo['filename'], 'w', 'utf-8' )
 
-    dts.loop_with_param( __divide, [100000,], 'divide Emotions' )
+    dts.loop_with_param( __divide, [3000,], 'divide Emotions' )
 
     for emo in Emotions:
         print '%s\t:\t%d' % ( emo['filename'], emo['cnt'] )
